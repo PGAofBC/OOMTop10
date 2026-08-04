@@ -80,61 +80,68 @@
   .status.error{color:var(--red);}
   .footbar{flex:0 0 auto;height:8px;background:linear-gradient(90deg,#217441 0%, #33a05a 45%, var(--red) 100%);margin:0 -30px;}
 
-  /* ================= MOBILE (phones) — desktop layout above is unaffected ============ */
+  /* ============ MOBILE (phones) — fits inside a fixed 700px iframe ============
+     Desktop rules above are untouched. Everything here is sized so the whole
+     board fills the frame exactly: no scrolling, no clipped rows, no resize
+     script needed on the host page. */
   @media (max-width:720px){
-    html,body{height:auto;overflow:visible;overflow-x:hidden;}
+    html,body{height:100%;overflow:hidden;}
     body{-webkit-text-size-adjust:100%;}
-    .board{flex-direction:column;height:auto;min-height:0;}
+    .board{flex-direction:column;height:100%;min-height:0;}
 
-    /* header stacks: logo + pill on one line, then the title block */
-    .left{flex:0 0 auto;padding:18px 18px 16px;}
-    .left::after{right:-30%;bottom:-40%;top:auto;width:180%;transform:rotate(38deg);opacity:.85;}
+    /* --- header --- */
+    .left{flex:0 0 auto;padding:13px 14px 12px;}
+    .left::after{right:-30%;bottom:-45%;top:auto;width:180%;transform:rotate(38deg);opacity:.8;}
     .topbar{align-items:center;}
-    .logo{height:52px;}
-    .tagpill{padding:7px 13px;font-size:.72rem;}
-    .headblock{margin:18px 0 0;padding:0;}
-    .eyebrow{font-size:.62rem;letter-spacing:.22em;}
-    .eyebrow::before{width:20px;flex:0 0 auto;}
-    h1{font-size:1.85rem;margin:9px 0 7px;}
-    .season{font-size:.82rem;}
-    .updated{font-size:.7rem;}
-    .fulllink{display:flex;justify-content:center;width:100%;margin-top:14px;padding:13px 18px;font-size:.85rem;}
+    .logo{height:40px;}
+    .tagpill{padding:6px 11px;font-size:.66rem;}
+    .headblock{margin:10px 0 0;padding:0;}
+    .eyebrow{font-size:.56rem;letter-spacing:.18em;}
+    .eyebrow::before{width:16px;height:2px;flex:0 0 auto;}
+    h1{font-size:1.15rem;line-height:1.06;margin:6px 0 4px;}
+    .season{font-size:.72rem;}
+    .updated{font-size:.62rem;margin-top:1px;}
+    .fulllink{display:flex;justify-content:center;width:100%;margin-top:9px;padding:9px 14px;
+      font-size:.74rem;border-radius:7px;}
 
-    /* top three cards, full width */
-    .podium{margin-top:16px;padding-top:0;gap:9px;}
-    .card{padding:11px 13px;gap:11px;}
-    .card.leader{padding:15px 14px;}
-    .badge{width:34px;height:34px;font-size:1rem;}
-    .card.leader .badge{width:42px;height:42px;font-size:1.2rem;}
-    .who .lbl{font-size:.58rem;letter-spacing:.26em;}
-    .who .nm{font-size:1.02rem;}
-    .card.leader .who .nm{font-size:1.22rem;}
-    .who .fac{font-size:.72rem;}
-    .ptsblock .pts{font-size:1.5rem;}
-    .card.leader .ptsblock .pts{font-size:2.2rem;}
-    .ptsblock .sub{font-size:.54rem;letter-spacing:.22em;}
+    /* --- top three --- */
+    .podium{margin-top:0;padding-top:11px;gap:7px;}
+    .card{padding:8px 11px;gap:9px;border-radius:11px;}
+    .card.leader{padding:10px 11px;}
+    .badge{width:28px;height:28px;font-size:.85rem;border-width:2px;}
+    .card.leader .badge{width:34px;height:34px;font-size:1rem;}
+    .who .lbl{font-size:.5rem;letter-spacing:.2em;margin-bottom:1px;}
+    .who .nm{font-size:.88rem;}
+    .card.leader .who .nm{font-size:1.02rem;}
+    .who .fac{font-size:.64rem;margin-top:0;}
+    .ptsblock .pts{font-size:1.15rem;}
+    .card.leader .ptsblock .pts{font-size:1.6rem;}
+    .ptsblock .sub{font-size:.46rem;letter-spacing:.16em;margin-top:1px;}
 
-    /* ranks 4-10 as full-width rows that grow with their content */
-    .right{padding:0 12px 0;}
-    .listhead{padding:14px 4px 7px;font-size:.6rem;letter-spacing:.12em;}
-    .listhead .h-rank{width:46px;}
-    .rows{overflow:visible;display:block;}
-    .row{display:flex;flex:0 0 auto;min-height:60px;padding:11px 4px;}
-    .row .rk{width:46px;gap:7px;}
-    .row .rk::before{width:4px;height:26px;}
-    .row .rk span{font-size:1.15rem;}
-    .row .nm{font-size:1.02rem;}
-    .row .fac{font-size:.75rem;}
-    .row .pt{font-size:1.5rem;}
-    .footbar{margin:0 -12px;height:7px;}
+    /* --- ranks 4-10: share whatever height is left, evenly --- */
+    .right{padding:0 12px 0;min-height:0;}
+    .listhead{padding:9px 3px 5px;font-size:.54rem;letter-spacing:.1em;border-bottom-width:2px;}
+    .listhead .h-rank{width:38px;}
+    .rows{flex:1 1 auto;min-height:0;overflow:hidden;}
+    .row{flex:1 1 0;min-height:0;padding:4px 3px;}
+    .row .rk{width:38px;gap:6px;}
+    .row .rk::before{width:3px;height:20px;}
+    .row .rk span{font-size:.95rem;}
+    .row .id{padding-right:8px;}
+    .row .nm{font-size:.9rem;line-height:1.15;}
+    .row .fac{font-size:.66rem;line-height:1.2;margin-top:1px;}
+    .row .pt{font-size:1.15rem;}
+    .footbar{margin:0 -12px;height:5px;}
   }
 
   /* small phones */
   @media (max-width:340px){
-    h1{font-size:1.6rem;}
-    .row .nm,.who .nm{font-size:.95rem;}
-    .row .pt{font-size:1.3rem;}
-    .card.leader .ptsblock .pts{font-size:1.9rem;}
+    h1{font-size:1.05rem;}
+    .row .nm{font-size:.84rem;}
+    .row .fac{font-size:.62rem;}
+    .row .pt{font-size:1.05rem;}
+    .card.leader .ptsblock .pts{font-size:1.45rem;}
+    .who .fac{font-size:.6rem;}
   }
 </style>
 </head>
