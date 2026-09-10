@@ -171,8 +171,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 /* Pulls the published Tagmarshal Cup standings page and reads its data block.
-   Same GitHub Pages origin, so the fetch works without any CORS setup. */
-var SOURCE_URL = 'https://pgaofbc.github.io/OOM/tagmarshal-cup-standings.html';
+   The standings page is the root of the OOM site. GitHub Pages sends
+   Access-Control-Allow-Origin: *, so this fetch works even when this board is
+   embedded from another domain. */
+var SOURCE_URL = 'https://pgaofbc.github.io/OOM/';
 var AUTO_REFRESH_MIN = 15;
 var RANK_COL = 0, NAME_COL = 1, FAC_COL = 2, TOTAL_COL = 8;
 
@@ -231,27 +233,33 @@ function render(records, asOf){
   document.getElementById('updated').textContent = asOf ? asOf : '';
 }
 
-function load(){
-  fetch(SOURCE_URL+'?cb='+Date.now())
-    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })
-    .then(function(html){
-      var block = html.match(/const DATA = `([\s\S]*?)`;/);
-      if(!block) throw new Error('standings data not found');
-      var records = block[1].trim().split('\n').map(function(line){
-        var c = line.split('|');
-        return { rank: parseInt(c[RANK_COL],10),
-                 name: displayName(c[NAME_COL]),
-                 fac: String(c[FAC_COL]||'').trim(),
-                 pts: fmtPts(c[TOTAL_COL]) };
-      }).filter(function(m){ return !isNaN(m.rank); });
-      if(!records.length) throw new Error('no players found');
+function parseStandings(html){
+  var block = html.match(/const DATA = `([\s\S]*?)`;/);
+  if(!block) return null;
+  var records = block[1].trim().split('\n').map(function(line){
+    var c = line.split('|');
+    return { rank: parseInt(c[RANK_COL],10),
+             name: displayName(c[NAME_COL]),
+             fac: String(c[FAC_COL]||'').trim(),
+             pts: fmtPts(c[TOTAL_COL]) };
+  }).filter(function(m){ return !isNaN(m.rank); });
+  if(!records.length) return null;
+  var asOf = html.match(/As of ([A-Za-z]+ \d{1,2}, \d{4})/);
+  return { records: records, asOf: asOf ? 'As of '+asOf[1] : '' };
+}
 
-      var asOf = html.match(/As of ([A-Za-z]+ \d{1,2}, \d{4})/);
-      render(records, asOf ? 'As of '+asOf[1] : '');
+function load(){
+  fetch(SOURCE_URL+(SOURCE_URL.indexOf('?')>-1?'&':'?')+'cb='+Date.now())
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status+' from '+SOURCE_URL); return r.text(); })
+    .then(function(html){
+      var data = parseStandings(html);
+      if(!data) throw new Error('no standings data found on '+SOURCE_URL);
+      render(data.records, data.asOf);
     })
     .catch(function(err){
       document.getElementById('rows').innerHTML =
-        '<div class="status error">Could not load the standings ('+esc(err.message)+'). It will retry automatically.</div>';
+        '<div class="status error">Could not load the standings &mdash; '
+        + esc(err.message) + '. It will retry automatically.</div>';
     });
 }
 
