@@ -176,7 +176,12 @@
    embedded from another domain. */
 var SOURCE_URL = 'https://pgaofbc.github.io/OOM/';
 var AUTO_REFRESH_MIN = 15;
-var RANK_COL = 0, NAME_COL = 1, FAC_COL = 2, TOTAL_COL = 8;
+/* Column map for the pipe-delimited rows in the standings DATA block:
+   0 Rank | 1 Player | 2 Facility | 3 Seniors' & Women's | 4 Assistants'
+   5 PGA of BC | 6 Events | 7 Participation | 8 Regional Tour
+   9 PGA of Canada | 10 Total
+   The board shows the Total, which is the order-of-merit points figure. */
+var RANK_COL = 0, NAME_COL = 1, FAC_COL = 2, TOTAL_COL = 10;
 
 /* ---- Spinning 3D Tagmarshal logo ----
    The mark is traced into vector outlines and extruded into real geometry at
